@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://cropdoctor.app/sitemap.xml

@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-stone-50 text-stone-900 min-h-screen selection:bg-agri-600 selection:text-white antialiased transition-colors duration-200;
+  }
+
+  /* Dark mode root styles */
+  .dark body {
+    @apply bg-stone-950 text-stone-100 selection:bg-emerald-600;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+  }
+}
+
+/* Custom Micro-Animations */
+@keyframes laserSweep {
+  0% {
+    top: 0%;
+    opacity: 0.8;
+  }
+  50% {
+    top: 95%;
+    opacity: 1;
+  }
+  100% {
+    top: 0%;
+    opacity: 0.8;
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(45, 128, 63, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(45, 128, 63, 0.45);
+  }
+}
+
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-laser {
+  animation: laserSweep 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: floatGentle 4s ease-in-out infinite;
+}
+
+/* Glassmorphism & High-End Card Styles */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+}
+
+.dark .glass-panel {
+  background: rgba(28, 25, 23, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(68, 64, 60, 0.6);
+}
+
+/* Clean Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d6d3d1;
+  border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #44403c;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a29e;
+}
+
+/* Subtle Interactive Buttons */
+button {
+  transition: all 0.15s ease-in-out;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Single-Page Clean Printable Report Rules */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  header, footer, nav, .print\\:hidden, #cookie-banner, .fixed {
+    display: none !important;
+  }
+
+  main {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .print\\:block {
+    display: block !important;
+  }
+
+  @page {
+    margin: 1cm;
+    size: A4 portrait;
+  }
+}

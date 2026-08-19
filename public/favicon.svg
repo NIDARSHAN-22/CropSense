@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <circle cx="50" cy="50" r="48" fill="#1c4326" />
+  <!-- Leaf Path -->
+  <path d="M50 18 C30 28, 22 52, 34 74 C46 96, 78 78, 76 48 C74 22, 54 18, 50 18 Z" fill="#4ade80" />
+  <!-- Leaf Vein -->
+  <path d="M50 24 C48 45, 52 65, 55 78" stroke="#166534" stroke-width="4" stroke-linecap="round" />
+  <path d="M49 42 C40 38, 35 45, 33 46" stroke="#166534" stroke-width="3" stroke-linecap="round" />
+  <path d="M51 54 C60 50, 66 56, 68 58" stroke="#166534" stroke-width="3" stroke-linecap="round" />
+  <path d="M53 66 C44 64, 41 70, 39 72" stroke="#166534" stroke-width="3" stroke-linecap="round" />
+  <!-- Medical Plus badge -->
+  <circle cx="72" cy="30" r="14" fill="#ef4444" stroke="#ffffff" stroke-width="2.5" />
+  <path d="M72 22 V38 M64 30 H80" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" />
+</svg>
