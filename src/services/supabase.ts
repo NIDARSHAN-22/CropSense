@@ -203,3 +203,41 @@ export const dbService = {
     }
   },
 };
+
+export interface UserAuthPayload {
+  id: string;
+  username?: string;
+  phone?: string;
+  email?: string;
+  passwordHash?: string;
+  pinHash?: string;
+  loginMethod: 'phone_otp' | 'pin_pass' | 'email_pass' | 'email_magic' | 'guest';
+  createdAt: string;
+}
+
+export async function saveUserCredentialsToSupabase(payload: UserAuthPayload): Promise<void> {
+  try {
+    const raw = localStorage.getItem('cropdoctor_user_credentials') || '[]';
+    const existing: UserAuthPayload[] = JSON.parse(raw);
+    const updated = [payload, ...existing.filter((u) => u.id !== payload.id)];
+    localStorage.setItem('cropdoctor_user_credentials', JSON.stringify(updated));
+  } catch (err) {
+    console.warn('Failed to store local user credentials:', err);
+  }
+
+  if (isSupabaseConfigured && supabase) {
+    try {
+      await supabase.from('user_profiles').upsert({
+        id: payload.id,
+        username: payload.username || null,
+        phone: payload.phone || null,
+        email: payload.email || null,
+        password_hash: payload.passwordHash || payload.pinHash || null,
+        login_method: payload.loginMethod,
+        created_at: payload.createdAt,
+      });
+    } catch (err) {
+      console.warn('Supabase user storage error:', err);
+    }
+  }
+}

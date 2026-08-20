@@ -13,7 +13,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { UserProfile } from '../../types';
-import { supabase, isSupabaseConfigured, saveStoredUserProfile } from '../../services/supabase';
+import { supabase, isSupabaseConfigured, saveStoredUserProfile, saveUserCredentialsToSupabase } from '../../services/supabase';
 import { consentService } from '../../services/consentService';
 import { securityService } from '../../services/securityService';
 import { errorHandler } from '../../services/errorHandler';
@@ -39,6 +39,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
 
   // Email Form
   const [email, setEmail] = useState('');
+  const [emailPassword, setEmailPassword] = useState('');
+  const [emailUsername, setEmailUsername] = useState('');
+  const [usePasswordAuth, setUsePasswordAuth] = useState(true);
   const [magicLinkSent, setMagicLinkSent] = useState(false);
 
   // Consent Checkboxes (Mandatory DPDP Act 2023 granular consent)
@@ -107,6 +110,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
       };
 
       await saveStoredUserProfile(userProfile);
+      await saveUserCredentialsToSupabase({
+        id: userProfile.id,
+        phone: sanitizedPhone,
+        username: userProfile.displayName,
+        loginMethod: 'phone_otp',
+        createdAt: userProfile.createdAt,
+      });
       await consentService.logTermsAndPrivacyConsent(userProfile.id, i18n.language);
       onLoginSuccess(userProfile);
       onClose();
@@ -130,7 +140,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
     setLoading(true);
     try {
       const sanitizedAccount = securityService.sanitizeInput(pinAccount);
-      // Hash with PBKDF2 salt
       const hashedPassword = await securityService.hashPassword(pinSecret);
 
       const userProfile: UserProfile = {
@@ -142,6 +151,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
       };
 
       await saveStoredUserProfile(userProfile);
+      await saveUserCredentialsToSupabase({
+        id: userProfile.id,
+        username: sanitizedAccount,
+        pinHash: hashedPassword,
+        loginMethod: 'pin_pass',
+        createdAt: userProfile.createdAt,
+      });
       await consentService.logTermsAndPrivacyConsent(userProfile.id, i18n.language);
       onLoginSuccess(userProfile);
       onClose();
@@ -152,7 +168,77 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
     }
   };
 
-  // 3. Email Magic Link Handler
+  // 3a. Email & Password Authentication (Supabase + PBKDF2 Hashed Persistence)
+  const handleEmailPasswordAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateConsent()) return;
+    if (!email.includes('@')) {
+      setErrorMsg('Please enter a valid email address');
+      return;
+    }
+    if (emailPassword.length < 6) {
+      setErrorMsg('Password must be at least 6 characters long');
+      return;
+    }
+
+    setLoading(true);
+    setErrorMsg('');
+
+    try {
+      const sanitizedEmail = securityService.sanitizeInput(email.toLowerCase().trim());
+      const sanitizedUsername = securityService.sanitizeInput(emailUsername || email.split('@')[0]);
+      const hashedPassword = await securityService.hashPassword(emailPassword);
+
+      if (isSupabaseConfigured && supabase) {
+        try {
+          const { error } = await supabase.auth.signUp({
+            email: sanitizedEmail,
+            password: emailPassword,
+            options: {
+              data: { display_name: sanitizedUsername }
+            }
+          });
+          if (error && error.message.includes('already registered')) {
+            await supabase.auth.signInWithPassword({
+              email: sanitizedEmail,
+              password: emailPassword,
+            });
+          }
+        } catch (supabaseErr) {
+          console.warn('Supabase email auth warning:', supabaseErr);
+        }
+      }
+
+      const userProfile: UserProfile = {
+        id: `email-${sanitizedEmail.replace(/[^a-z0-9]/g, '-')}`,
+        displayName: sanitizedUsername,
+        email: sanitizedEmail,
+        preferredLanguage: i18n.language,
+        createdAt: new Date().toISOString(),
+        isGuest: false,
+      };
+
+      await saveStoredUserProfile(userProfile);
+      await saveUserCredentialsToSupabase({
+        id: userProfile.id,
+        username: sanitizedUsername,
+        email: sanitizedEmail,
+        passwordHash: hashedPassword,
+        loginMethod: 'email_pass',
+        createdAt: userProfile.createdAt,
+      });
+
+      await consentService.logTermsAndPrivacyConsent(userProfile.id, i18n.language);
+      onLoginSuccess(userProfile);
+      onClose();
+    } catch (err: any) {
+      setErrorMsg('Authentication error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 3b. Email Magic Link Handler
   const handleSendMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateConsent()) return;
@@ -170,6 +256,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
         });
         if (error) throw error;
       }
+      await saveUserCredentialsToSupabase({
+        id: `email-${email.replace(/[^a-z0-9]/g, '-')}`,
+        email: email.toLowerCase().trim(),
+        loginMethod: 'email_magic',
+        createdAt: new Date().toISOString(),
+      });
       setMagicLinkSent(true);
     } catch (err: any) {
       setMagicLinkSent(true);
@@ -393,11 +485,33 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
             </form>
           )}
 
-          {/* TAB 3: EMAIL MAGIC LINK */}
+          {/* TAB 3: EMAIL & PASSWORD / MAGIC LINK */}
           {tab === 'email' && (
-            <div>
-              {!magicLinkSent ? (
-                <form onSubmit={handleSendMagicLink} className="space-y-4">
+            <div className="space-y-4">
+              {/* Toggle Mode: Password vs Magic Link */}
+              <div className="flex bg-stone-100 p-1 rounded-xl text-xs font-bold mb-1">
+                <button
+                  type="button"
+                  onClick={() => { setUsePasswordAuth(true); setErrorMsg(''); }}
+                  className={`flex-1 py-2 rounded-lg transition-all ${
+                    usePasswordAuth ? 'bg-white text-agri-900 shadow-sm' : 'text-stone-500 hover:text-stone-800'
+                  }`}
+                >
+                  Email + Password
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setUsePasswordAuth(false); setErrorMsg(''); }}
+                  className={`flex-1 py-2 rounded-lg transition-all ${
+                    !usePasswordAuth ? 'bg-white text-agri-900 shadow-sm' : 'text-stone-500 hover:text-stone-800'
+                  }`}
+                >
+                  Magic Link
+                </button>
+              </div>
+
+              {usePasswordAuth ? (
+                <form onSubmit={handleEmailPasswordAuth} className="space-y-3">
                   <div>
                     <label className="block text-xs font-bold text-stone-700 mb-1">
                       {t('auth.emailLabel')}
@@ -407,7 +521,34 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder={t('auth.emailPlaceholder')}
-                      className="w-full px-4 py-3 text-xs sm:text-sm rounded-xl border border-stone-300 focus:border-agri-600 focus:ring-2 focus:ring-agri-100 outline-none bg-white text-stone-900 placeholder:text-stone-400"
+                      className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-stone-300 focus:border-agri-600 outline-none bg-white text-stone-900 placeholder:text-stone-400 font-semibold"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-stone-700 mb-1">
+                      Username / Farmer Name
+                    </label>
+                    <input
+                      type="text"
+                      value={emailUsername}
+                      onChange={(e) => setEmailUsername(e.target.value)}
+                      placeholder="e.g. Ramesh Kumar"
+                      className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-stone-300 focus:border-agri-600 outline-none bg-white text-stone-900 placeholder:text-stone-400 font-semibold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-stone-700 mb-1">
+                      Password (6+ characters)
+                    </label>
+                    <input
+                      type="password"
+                      value={emailPassword}
+                      onChange={(e) => setEmailPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-stone-300 focus:border-agri-600 outline-none font-mono bg-white text-stone-900 placeholder:text-stone-400 font-semibold"
                       required
                     />
                   </div>
@@ -417,25 +558,54 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                     disabled={loading}
                     className="w-full py-3.5 bg-agri-600 hover:bg-agri-700 text-white font-bold rounded-xl text-xs sm:text-sm transition-colors shadow-md shadow-agri-600/30 flex items-center justify-center gap-2"
                   >
-                    {loading ? 'Sending...' : t('auth.sendMagic')}
+                    {loading ? 'Securing Session...' : 'Sign In / Register with Email'}
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </form>
               ) : (
-                <div className="text-center py-4 space-y-3">
-                  <div className="w-12 h-12 rounded-full bg-agri-100 text-agri-700 flex items-center justify-center mx-auto">
-                    <CheckCircle2 className="w-6 h-6" />
-                  </div>
-                  <h4 className="font-bold text-stone-900 text-sm">Check Your Email</h4>
-                  <p className="text-xs text-stone-500">
-                    We sent a zero-cost magic login link to <strong>{email}</strong>.
-                  </p>
-                  <button
-                    onClick={() => setMagicLinkSent(false)}
-                    className="text-xs text-agri-700 font-semibold hover:underline"
-                  >
-                    Use another email
-                  </button>
+                <div>
+                  {!magicLinkSent ? (
+                    <form onSubmit={handleSendMagicLink} className="space-y-4">
+                      <div>
+                        <label className="block text-xs font-bold text-stone-700 mb-1">
+                          {t('auth.emailLabel')}
+                        </label>
+                        <input
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder={t('auth.emailPlaceholder')}
+                          className="w-full px-4 py-3 text-xs sm:text-sm rounded-xl border border-stone-300 focus:border-agri-600 outline-none bg-white text-stone-900 placeholder:text-stone-400 font-semibold"
+                          required
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full py-3.5 bg-agri-600 hover:bg-agri-700 text-white font-bold rounded-xl text-xs sm:text-sm transition-colors shadow-md shadow-agri-600/30 flex items-center justify-center gap-2"
+                      >
+                        {loading ? 'Sending...' : t('auth.sendMagic')}
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </form>
+                  ) : (
+                    <div className="text-center py-4 space-y-3">
+                      <div className="w-12 h-12 rounded-full bg-agri-100 text-agri-700 flex items-center justify-center mx-auto">
+                        <CheckCircle2 className="w-6 h-6" />
+                      </div>
+                      <h4 className="font-bold text-stone-900 text-sm">Check Your Email</h4>
+                      <p className="text-xs text-stone-500">
+                        We sent a magic login link to <strong>{email}</strong>.
+                      </p>
+                      <button
+                        onClick={() => setMagicLinkSent(false)}
+                        className="text-xs text-agri-700 font-semibold hover:underline"
+                      >
+                        Use another email
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
