@@ -21,6 +21,20 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Outfit', 'Inter', system-ui, sans-serif;
   }
+
+  /* Form inputs text color & autofill contrast */
+  input, textarea, select {
+    color: #1c1917;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus {
+    -webkit-text-fill-color: #1c1917 !important;
+  }
 }
 input, textarea, select {
     color: #1c1917;

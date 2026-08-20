@@ -286,14 +286,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                       <span className="absolute left-3.5 top-3 text-xs font-bold text-stone-400">
                         +91
                       </span>
-                    <input
-                      type="tel"
-                      maxLength={10}
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ''))}
-                      placeholder={t('auth.phonePlaceholder')}
-                      className="w-full pl-12 pr-4 py-3 text-sm rounded-xl border border-stone-300 focus:border-agri-600 focus:ring-2 focus:ring-agri-100 outline-none font-medium bg-white text-stone-900 placeholder:text-stone-400"
-                      required
+                      <input
+                        type="tel"
+                        maxLength={10}
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ''))}
+                        placeholder={t('auth.phonePlaceholder')}
+                        className="w-full pl-12 pr-4 py-3 text-sm rounded-xl border border-stone-300 focus:border-agri-600 focus:ring-2 focus:ring-agri-100 outline-none font-medium bg-white text-stone-900 placeholder:text-stone-400"
+                        required
                       />
                     </div>
                   </div>
@@ -402,14 +402,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                     <label className="block text-xs font-bold text-stone-700 mb-1">
                       {t('auth.emailLabel')}
                     </label>
-                   <input
-                     type="email"
-                     value={email}
-                     onChange={(e) => setEmail(e.target.value)}
-                     placeholder={t('auth.emailPlaceholder')}
-                     className="w-full px-4 py-3 text-xs sm:text-sm rounded-xl border border-stone-300 focus:border-agri-600 focus:ring-2 focus:ring-agri-100 outline-none bg-white text-stone-900 placeholder:text-stone-400"
-                     required
-                   />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder={t('auth.emailPlaceholder')}
+                      className="w-full px-4 py-3 text-xs sm:text-sm rounded-xl border border-stone-300 focus:border-agri-600 focus:ring-2 focus:ring-agri-100 outline-none bg-white text-stone-900 placeholder:text-stone-400"
+                      required
+                    />
                   </div>
 
                   <button
