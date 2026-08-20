@@ -2,10 +2,10 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { ScanRecord, FeedbackRecord, ConsentLog, UserProfile } from '../types';
 import { MOCK_SCANS } from '../data/mockScans';
 import { securityService } from './securityService';
- 
+
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
- 
+
 function isValidHttpUrl(value: string): boolean {
   try {
     const url = new URL(value);
@@ -14,7 +14,7 @@ function isValidHttpUrl(value: string): boolean {
     return false;
   }
 }
- 
+
 export const isSupabaseConfigured = Boolean(
   SUPABASE_URL &&
   SUPABASE_ANON_KEY &&
@@ -22,7 +22,7 @@ export const isSupabaseConfigured = Boolean(
   !SUPABASE_URL.includes('your_supabase') &&
   isValidHttpUrl(SUPABASE_URL)
 );
- 
+
 // Never let a bad/placeholder env var crash the whole app on load —
 // fall back to null (local-storage mode) instead of throwing at module scope.
 export const supabase: SupabaseClient | null = (() => {
@@ -34,12 +34,12 @@ export const supabase: SupabaseClient | null = (() => {
     return null;
   }
 })();
- 
+
 const LOCAL_SCANS_KEY = 'cropdoctor_scans_v1';
 const LOCAL_USER_KEY = 'cropdoctor_user_profile_v1';
 const LOCAL_CONSENT_KEY = 'cropdoctor_consent_logs_v1';
 const LOCAL_USER_SIG_KEY = 'cropdoctor_user_sig_v1';
- 
+
 export function getLocalScans(userId?: string): ScanRecord[] {
   try {
     const raw = localStorage.getItem(LOCAL_SCANS_KEY);
@@ -50,7 +50,7 @@ export function getLocalScans(userId?: string): ScanRecord[] {
     } else {
       allScans = JSON.parse(raw);
     }
- 
+
     // Strict Data Isolation: Only return scans belonging to current userId
     if (userId && !userId.startsWith('guest-') && !userId.startsWith('demo-')) {
       return allScans.filter((s) => s.userId === userId);
@@ -60,7 +60,7 @@ export function getLocalScans(userId?: string): ScanRecord[] {
     return MOCK_SCANS;
   }
 }
- 
+
 export function saveLocalScan(scan: ScanRecord): void {
   try {
     const raw = localStorage.getItem(LOCAL_SCANS_KEY);
@@ -71,7 +71,7 @@ export function saveLocalScan(scan: ScanRecord): void {
     console.warn('Failed to persist scan locally:', err);
   }
 }
- 
+
 export function updateLocalScanStatus(scanId: string, status: 'active' | 'treated' | 'resolved'): void {
   try {
     const raw = localStorage.getItem(LOCAL_SCANS_KEY);
@@ -83,14 +83,14 @@ export function updateLocalScanStatus(scanId: string, status: 'active' | 'treate
     console.warn('Failed to update scan status:', err);
   }
 }
- 
+
 // User Profile with Cryptographic Anti-Tampering Signature
 export async function getStoredUserProfile(): Promise<UserProfile | null> {
   try {
     const raw = localStorage.getItem(LOCAL_USER_KEY);
     const sig = localStorage.getItem(LOCAL_USER_SIG_KEY);
     if (!raw || !sig) return null;
- 
+
     // Verify signature against DevTools manipulation
     const isValid = await securityService.verifyDataIntegrity(raw, sig);
     if (!isValid) {
@@ -103,7 +103,7 @@ export async function getStoredUserProfile(): Promise<UserProfile | null> {
     return null;
   }
 }
- 
+
 export async function saveStoredUserProfile(profile: UserProfile): Promise<void> {
   try {
     const raw = JSON.stringify(profile);
@@ -114,12 +114,12 @@ export async function saveStoredUserProfile(profile: UserProfile): Promise<void>
     console.warn('Failed to store profile securely:', err);
   }
 }
- 
+
 export function clearStoredUserProfile(): void {
   localStorage.removeItem(LOCAL_USER_KEY);
   localStorage.removeItem(LOCAL_USER_SIG_KEY);
 }
- 
+
 // Unified Isolated Database Service
 export const dbService = {
   async fetchUserScans(userId: string): Promise<ScanRecord[]> {
@@ -130,7 +130,7 @@ export const dbService = {
           .select('*')
           .eq('user_id', userId)
           .order('created_at', { ascending: false });
- 
+
         if (error) throw error;
         return data || [];
       } catch (err) {
@@ -139,7 +139,7 @@ export const dbService = {
     }
     return getLocalScans(userId);
   },
- 
+
   async insertScan(scan: ScanRecord): Promise<void> {
     saveLocalScan(scan);
     if (isSupabaseConfigured && supabase && !scan.userId.startsWith('guest-') && !scan.userId.startsWith('demo-')) {
@@ -162,7 +162,7 @@ export const dbService = {
       }
     }
   },
- 
+
   async recordFeedback(feedback: FeedbackRecord): Promise<void> {
     if (isSupabaseConfigured && supabase) {
       try {
@@ -178,7 +178,7 @@ export const dbService = {
       }
     }
   },
- 
+
   async recordConsent(consent: ConsentLog): Promise<void> {
     try {
       const logs = JSON.parse(localStorage.getItem(LOCAL_CONSENT_KEY) || '[]');
@@ -187,7 +187,7 @@ export const dbService = {
     } catch {
       // Handled silently
     }
- 
+
     if (isSupabaseConfigured && supabase) {
       try {
         await supabase.from('consent_log').insert({
@@ -202,5 +202,4 @@ export const dbService = {
       }
     }
   },
-
-   
+};
