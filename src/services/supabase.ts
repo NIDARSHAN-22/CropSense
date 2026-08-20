@@ -3,8 +3,27 @@ import { ScanRecord, FeedbackRecord, ConsentLog, UserProfile } from '../types';
 import { MOCK_SCANS } from '../data/mockScans';
 import { securityService } from './securityService';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+function cleanEnvVar(val: string | undefined): string {
+  if (!val) return '';
+  return val.trim().replace(/^["']|["']$/g, '');
+}
+
+function normalizeSupabaseUrl(raw: string): string {
+  const cleaned = cleanEnvVar(raw);
+  if (!cleaned) return 'https://rijoxcghdbesfdiuiqpr.supabase.co';
+  if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
+    return cleaned;
+  }
+  if (cleaned.includes('.supabase.co')) {
+    return `https://${cleaned}`;
+  }
+  return `https://${cleaned}.supabase.co`;
+}
+
+const DEFAULT_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpam94Y2doZGJlc2ZkaXVpcXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxMTk4MDMsImV4cCI6MjEwMjY5NTgwM30.UHBkudPBcZbiPDo9RP5VGAatV3oFNlv3Zrx9y7U4E0k';
+
+const SUPABASE_URL = normalizeSupabaseUrl(import.meta.env.VITE_SUPABASE_URL || '');
+const SUPABASE_ANON_KEY = cleanEnvVar(import.meta.env.VITE_SUPABASE_ANON_KEY) || DEFAULT_SUPABASE_KEY;
 
 function isValidHttpUrl(value: string): boolean {
   try {
@@ -18,8 +37,6 @@ function isValidHttpUrl(value: string): boolean {
 export const isSupabaseConfigured = Boolean(
   SUPABASE_URL &&
   SUPABASE_ANON_KEY &&
-  !SUPABASE_URL.includes('your-project-ref') &&
-  !SUPABASE_URL.includes('your_supabase') &&
   isValidHttpUrl(SUPABASE_URL)
 );
 
