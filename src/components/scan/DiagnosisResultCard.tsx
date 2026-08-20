@@ -56,7 +56,9 @@ export const DiagnosisResultCard: React.FC<DiagnosisResultCardProps> = ({
 
   // Dynamically resolve localized content based on current active language
   const diseaseFullKey = `${result.cropKey}___${result.diseaseKey}`;
-  const localized = getLocalizedDiseaseContent(result.id || diseaseFullKey, i18n.language) || getLocalizedDiseaseContent(diseaseFullKey, i18n.language);
+  const localized = getLocalizedDiseaseContent(diseaseFullKey, i18n.language)
+                 || getLocalizedDiseaseContent(`${result.crop}___${result.disease}`, i18n.language)
+                 || getLocalizedDiseaseContent(result.diseaseKey, i18n.language);
 
   const displayCrop = localized?.cropName || getLocalizedCropName(result.cropKey || result.crop, i18n.language);
   const displayDisease = localized?.diseaseName || getLocalizedDiseaseTitle(result.diseaseKey || result.disease, i18n.language);

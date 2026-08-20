@@ -830,24 +830,35 @@ export function getLocalizedDiseaseTitle(diseaseKeyOrName: string, langCode: str
  */
 export function getLocalizedDiseaseContent(
   diseaseKey: string,
-  langCode: string
+  langCode: string = 'en'
 ): LocalizedDiseaseContent | null {
   if (!diseaseKey) return null;
 
-  let diseaseMap = LOCALIZED_DISEASE_DATA[diseaseKey];
-
-  if (!diseaseMap) {
-    const normSearch = diseaseKey.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const foundKey = Object.keys(LOCALIZED_DISEASE_DATA).find((k) => {
-      const normK = k.toLowerCase().replace(/[^a-z0-9]/g, '');
-      return normK.includes(normSearch) || normSearch.includes(normK);
-    });
-    if (foundKey) {
-      diseaseMap = LOCALIZED_DISEASE_DATA[foundKey];
-    }
+  // 1. Direct match
+  if (LOCALIZED_DISEASE_DATA[diseaseKey]) {
+    const diseaseMap = LOCALIZED_DISEASE_DATA[diseaseKey];
+    return diseaseMap[langCode] || diseaseMap['en'] || null;
   }
 
-  if (!diseaseMap) return null;
+  // 2. Clean key normalization
+  const cleanKey = (str: string) =>
+    str
+      .toLowerCase()
+      .replace(/maize|paddy|\(|\)|_|--|-|\s/g, '')
+      .trim();
 
-  return diseaseMap[langCode] || diseaseMap['en'] || null;
+  const searchTarget = cleanKey(diseaseKey);
+  if (!searchTarget) return null;
+
+  const foundKey = Object.keys(LOCALIZED_DISEASE_DATA).find((k) => {
+    const cleanK = cleanKey(k);
+    return cleanK === searchTarget || cleanK.includes(searchTarget) || searchTarget.includes(cleanK);
+  });
+
+  if (foundKey) {
+    const diseaseMap = LOCALIZED_DISEASE_DATA[foundKey];
+    return diseaseMap[langCode] || diseaseMap['en'] || null;
+  }
+
+  return null;
 }

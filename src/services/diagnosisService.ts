@@ -17,24 +17,22 @@ function buildResult(
   language: string = 'en'
 ): DiagnosisResult {
   const lowConfidence = confidence < 0.65;
-  const fullId = disease.id || `${disease.cropKey}___${disease.diseaseKey}`;
-  const localized = getLocalizedDiseaseContent(fullId, language) || getLocalizedDiseaseContent(`${disease.cropKey}___${disease.diseaseKey}`, language);
 
   return {
     id: `diag-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
-    crop: localized ? localized.cropName : disease.crop,
+    crop: disease.crop,
     cropKey: disease.cropKey,
-    disease: localized ? localized.diseaseName : disease.disease,
+    disease: disease.disease,
     diseaseKey: disease.diseaseKey,
     scientificName: disease.scientificName,
     pathogenType: disease.pathogenType,
     confidence,
     severity: disease.defaultSeverity,
     isHealthy: disease.isHealthy,
-    symptoms: localized ? localized.symptoms : disease.symptoms,
-    organicRemedies: localized ? localized.organicRemedies : disease.organicRemedies,
-    chemicalRemedies: localized ? localized.chemicalRemedies : disease.chemicalRemedies,
-    preventionTips: localized ? localized.preventionTips : disease.preventionTips,
+    symptoms: disease.symptoms,
+    organicRemedies: disease.organicRemedies,
+    chemicalRemedies: disease.chemicalRemedies,
+    preventionTips: disease.preventionTips,
     lowConfidence,
     provider,
     timestamp: new Date().toISOString(),
