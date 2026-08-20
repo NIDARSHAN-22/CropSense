@@ -286,14 +286,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                       <span className="absolute left-3.5 top-3 text-xs font-bold text-stone-400">
                         +91
                       </span>
-                      <input
-                        type="tel"
-                        maxLength={10}
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ''))}
-                        placeholder={t('auth.phonePlaceholder')}
-                        className="w-full pl-12 pr-4 py-3 text-sm rounded-xl border border-stone-300 focus:border-agri-600 focus:ring-2 focus:ring-agri-100 outline-none font-medium"
-                        required
+                    <input
+                      type="tel"
+                      maxLength={10}
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ''))}
+                      placeholder={t('auth.phonePlaceholder')}
+                      className="w-full pl-12 pr-4 py-3 text-sm rounded-xl border border-stone-300 focus:border-agri-600 focus:ring-2 focus:ring-agri-100 outline-none font-medium bg-white text-stone-900 placeholder:text-stone-400"
+                      required
                       />
                     </div>
                   </div>
@@ -322,9 +322,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                       value={otpCode}
                       onChange={(e) => setOtpCode(e.target.value)}
                       placeholder="123456"
-                      className="w-full px-4 py-3 text-center tracking-widest text-lg font-bold rounded-xl border border-stone-300 focus:border-agri-600 focus:ring-2 focus:ring-agri-100 outline-none"
+                      className="w-full px-4 py-3 text-center tracking-widest text-lg font-bold rounded-xl border border-stone-300 focus:border-agri-600 focus:ring-2 focus:ring-agri-100 outline-none bg-white text-stone-900 placeholder:text-stone-400"
                       required
-                    />
+                      />
                   </div>
 
                   <button
@@ -360,9 +360,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                   value={pinAccount}
                   onChange={(e) => setPinAccount(e.target.value)}
                   placeholder="e.g. Ramesh Kumar"
-                  className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-stone-300 focus:border-agri-600 outline-none"
+                  className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-stone-300 focus:border-agri-600 outline-none bg-white text-stone-900 placeholder:text-stone-400 font-semibold"
                   required
-                />
+                  />
               </div>
 
               <div>
@@ -374,9 +374,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                   value={pinSecret}
                   onChange={(e) => setPinSecret(e.target.value)}
                   placeholder="••••"
-                  className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-stone-300 focus:border-agri-600 outline-none font-mono"
+                  className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-stone-300 focus:border-agri-600 outline-none font-mono bg-white text-stone-900 placeholder:text-stone-400 font-semibold"
                   required
-                />
+                />  
                 <p className="text-[10px] text-stone-400 mt-1">
                   Protected with PBKDF2/SHA-256 cryptographic salt hashing.
                 </p>
@@ -402,14 +402,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                     <label className="block text-xs font-bold text-stone-700 mb-1">
                       {t('auth.emailLabel')}
                     </label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder={t('auth.emailPlaceholder')}
-                      className="w-full px-4 py-3 text-xs sm:text-sm rounded-xl border border-stone-300 focus:border-agri-600 focus:ring-2 focus:ring-agri-100 outline-none"
-                      required
-                    />
+                   <input
+                     type="email"
+                     value={email}
+                     onChange={(e) => setEmail(e.target.value)}
+                     placeholder={t('auth.emailPlaceholder')}
+                     className="w-full px-4 py-3 text-xs sm:text-sm rounded-xl border border-stone-300 focus:border-agri-600 focus:ring-2 focus:ring-agri-100 outline-none bg-white text-stone-900 placeholder:text-stone-400"
+                     required
+                   />
                   </div>
 
                   <button
