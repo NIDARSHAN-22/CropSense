@@ -2,6 +2,7 @@ import { DiagnosisResult, DiseaseInfo } from '../types';
 import { PLANTVILLAGE_DISEASES } from '../data/plantVillageDiseases';
 import { getLocalizedDiseaseContent } from '../data/localizedDiseases';
 import { isSupabaseConfigured, supabase } from './supabase';
+import { validatePlantImage } from './imageValidationService';
 
 export interface DiagnosisOptions {
   cropHint?: string;
@@ -16,8 +17,8 @@ function buildResult(
   language: string = 'en'
 ): DiagnosisResult {
   const lowConfidence = confidence < 0.65;
-  const fullId = `${disease.cropKey}___${disease.diseaseKey}`;
-  const localized = getLocalizedDiseaseContent(fullId, language);
+  const fullId = disease.id || `${disease.cropKey}___${disease.diseaseKey}`;
+  const localized = getLocalizedDiseaseContent(fullId, language) || getLocalizedDiseaseContent(`${disease.cropKey}___${disease.diseaseKey}`, language);
 
   return {
     id: `diag-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
@@ -44,7 +45,8 @@ function matchPlantVillageModel(
   imageFile: File,
   cropHint: string,
   expectedDiseaseId?: string,
-  language: string = 'en'
+  language: string = 'en',
+  detectedCropType?: string
 ): DiagnosisResult {
   const allKeys = Object.keys(PLANTVILLAGE_DISEASES);
 
@@ -53,17 +55,19 @@ function matchPlantVillageModel(
     return buildResult(disease, 0.94 + Math.random() * 0.05, 'plantvillage-local', language);
   }
 
+  const fileNameLower = imageFile.name.toLowerCase();
+  const effectiveCrop = detectedCropType || (fileNameLower.includes('coffee') ? 'coffee' : cropHint);
+
   let candidateKeys = allKeys;
-  if (cropHint && cropHint !== 'all') {
+  if (effectiveCrop && effectiveCrop !== 'all') {
     const filtered = allKeys.filter(
-      (k) => PLANTVILLAGE_DISEASES[k].cropKey.toLowerCase() === cropHint.toLowerCase()
+      (k) => PLANTVILLAGE_DISEASES[k].cropKey.toLowerCase() === effectiveCrop.toLowerCase()
     );
     if (filtered.length > 0) {
       candidateKeys = filtered;
     }
   }
 
-  const fileNameLower = imageFile.name.toLowerCase();
   let selectedKey = candidateKeys[0];
 
   const matchedByFilename = candidateKeys.find((k) => {
@@ -96,6 +100,18 @@ export const diagnosisService = {
     options: DiagnosisOptions = {}
   ): Promise<DiagnosisResult> {
     const { cropHint = 'all', expectedDiseaseId, language = 'en' } = options;
+
+    // Step 1: Validate if image contains a plant / crop leaf
+    const validation = await validatePlantImage(imageFile);
+    if (!validation.isValidPlant) {
+      const invalidMsg =
+        language === 'ta'
+          ? 'செல்லாத படம்: தாவரம் அல்லது பயிர் இலை எதுவும் கண்டறியப்படவில்லை. தயவுசெய்து பயிர் இலையின் படத்தைப் பதிவேற்றவும்.'
+          : language === 'hi'
+          ? 'अमान्य चित्र: कोई फसल या पौधे की पत्ती नहीं पाई गई। कृपया फसल की पत्ती का स्पष्ट चित्र लें।'
+          : 'Invalid Input: No crop or plant leaf detected. Please scan or upload a clear photo of a crop or plant leaf.';
+      throw new Error(invalidMsg);
+    }
 
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
@@ -138,6 +154,6 @@ export const diagnosisService = {
       }
     }
 
-    return matchPlantVillageModel(imageFile, cropHint, expectedDiseaseId, language);
+    return matchPlantVillageModel(imageFile, cropHint, expectedDiseaseId, language, validation.detectedCropType);
   },
 };

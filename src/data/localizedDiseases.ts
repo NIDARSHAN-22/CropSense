@@ -685,7 +685,144 @@ export const LOCALIZED_DISEASE_DATA: Record<string, Record<string, LocalizedDise
       preventionTips: ['উন্নত রোগ প্রতিরোধী জাতের বীজ বপন করুন'],
     },
   },
+  'Coffee___Leaf_rust': {
+    en: {
+      cropName: 'Coffee',
+      diseaseName: 'Coffee Leaf Rust',
+      symptoms: [
+        'Yellow-orange powdery spots on the undersides of coffee leaves',
+        'Corresponding chlorotic yellow patches on the upper leaf surface',
+        'Severe defoliation leading to dieback of coffee branches'
+      ],
+      organicRemedies: [
+        'Spray copper hydroxide or Bordeaux mixture (0.5%) before monsoons',
+        'Prune shade trees to improve canopy aeration and sun penetration'
+      ],
+      chemicalRemedies: [
+        'Hexaconazole 5% EC @ 2ml/L or Triadimefon 25% WP @ 1g/L',
+        'Propiconazole 25% EC @ 1ml/L at first sign of orange spots'
+      ],
+      preventionTips: [
+        'Plant resistant Arabica varieties (e.g. Chandragiri, Selection 9)',
+        'Maintain balanced soil N:K ratio to strengthen leaf resistance'
+      ]
+    },
+    ta: {
+      cropName: 'காபி',
+      diseaseName: 'காபி இலைத் துரு நோய் (Coffee Leaf Rust)',
+      symptoms: [
+        'காபி இலைகளின் அடிப்புறத்தில் மஞ்சள்-ஆரஞ்சு நிறப் பொடி போன்ற புள்ளிகள்',
+        'இலையின் மேல் பரப்பில் மஞ்சள் நிறத் திட்டுகள் தோன்றுதல்',
+        'இலைகள் உதிர்ந்து கிளையின் நுனிக் கருகல் நோய் ஏற்படுதல்'
+      ],
+      organicRemedies: [
+        'மழைக்காலத்திற்கு முன் போர்டோ கலவை (0.5%) தெளிக்கவும்',
+        'நிழல் மரங்களைக் கழித்து காற்றோட்டத்தையும் சூரிய ஒளியையும் அதிகரிக்கவும்'
+      ],
+      chemicalRemedies: [
+        'ஹெக்சாகோனசோல் 5% EC @ 2 மி.லி/லிட்டர் தெளிக்கவும்',
+        'புரோபிகோனசோல் 25% EC @ 1 மி.லி/லிட்டர் தெளிக்கவும்'
+      ],
+      preventionTips: [
+        'நோயெதிர்ப்புத் திறன் கொண்ட சந்திரகிரி ரகங்களைப் பயிரிடவும்'
+      ]
+    },
+    hi: {
+      cropName: 'कॉफी',
+      diseaseName: 'कॉफी पत्ती रस्ट (Coffee Leaf Rust)',
+      symptoms: [
+        'पत्तियों की निचली सतह पर पीले-नारंगी पाउडर जैसे धब्बे',
+        'पत्ती की ऊपरी सतह पर पीले धब्बे बनना',
+        'पत्तियां गिरना और शाखाओं का सूखना'
+      ],
+      organicRemedies: [
+        'मानसून से पहले बोर्डो मिश्रण (0.5%) का छिड़काव करें',
+        'छायादार पेड़ों की छंटाई करें ताकि धूप और हवा मिले'
+      ],
+      chemicalRemedies: [
+        'हेक्साकोनाज़ोल 5% EC @ 2 मिली/लीटर छिड़कें'
+      ],
+      preventionTips: [
+        'रोग प्रतिरोधी किस्मों का चयन करें'
+      ]
+    },
+    te: {
+      cropName: 'కాఫీ',
+      diseaseName: 'కాఫీ ఆకు రస్ట్ తెగులు (Coffee Leaf Rust)',
+      symptoms: ['ఆకుల అడుగున పసుపు-నారింజ మచ్చలు', 'ఆకులు రాలిపోవడం'],
+      organicRemedies: ['బోర్డో మిశ్రమం (0.5%) పిచికారీ చేయండి'],
+      chemicalRemedies: ['హెక్సాకోనజోల్ 2 మి.లీ/లీటరు పిచికారీ చేయండి'],
+      preventionTips: ['నిరోధక రకాలను ఎంచుకోండి']
+    },
+    kn: {
+      cropName: 'ಕಾಫಿ',
+      diseaseName: 'ಕಾಫಿ ಎಲೆ ತುಕ್ಕು ರೋಗ (Coffee Leaf Rust)',
+      symptoms: ['ಎಲೆಗಳ ಕೆಳಗೆ ಹಳದಿ-ಕಿತ್ತಳೆ ಕಲೆಗಳು', 'ಎಲೆಗಳು ಉದುರುವುದು'],
+      organicRemedies: ['ಬೋರ್ಡೋ ಮಿಶ್ರಣ (0.5%) ಸಿಂಪಡಿಸಿ'],
+      chemicalRemedies: ['ಹೆಕ್ಸಾಕೋನಜೋಲ್ 2ಮಿ.ಲೀ/ಲೀಟರ್ ಸಿಂಪಡಿಸಿ'],
+      preventionTips: ['ರೋಗನಿರೋಧಕ ತಳಿ ಬೆಳೆಯಿರಿ']
+    },
+    mr: {
+      cropName: 'कॉफी',
+      diseaseName: 'कॉफी तांबेरा (Coffee Leaf Rust)',
+      symptoms: ['पानांच्या खाली पिवळे-नारंगी ठिपके', 'पाने गळणे'],
+      organicRemedies: ['बोार्डो मिश्रण फवारा'],
+      chemicalRemedies: ['हेक्साकोनाझोल फवारा'],
+      preventionTips: ['प्रतिकारक वाण वापरा']
+    },
+    bn: {
+      cropName: 'কফি',
+      diseaseName: 'কফি পাতার মরিচা রোগ (Coffee Leaf Rust)',
+      symptoms: ['পাতার নিচে হলুদ-কমলা দাগ', 'পাতা ঝরে পড়া'],
+      organicRemedies: ['বোর্ডো মিশ্রণ স্প্রে করুন'],
+      chemicalRemedies: ['হেক্সাকোনাজল স্প্রে করুন'],
+      preventionTips: ['প্রতিরোধী জাত রোপণ করুন']
+    }
+  }
 };
+
+const CROP_TRANSLATIONS: Record<string, Record<string, string>> = {
+  corn: { en: 'Corn (Maize)', ta: 'மக்காச்சோளம்', hi: 'मक्का', te: 'మొక్కజొన్న', kn: 'ಮೆಕ್ಕೆಜೋಳ', mr: 'मक्का', bn: 'ভুট্টা' },
+  tomato: { en: 'Tomato', ta: 'தக்காளி', hi: 'टमाटर', te: 'టమోటా', kn: 'ಟೊಮೆಟೊ', mr: 'टोमॅटो', bn: 'টমেটো' },
+  potato: { en: 'Potato', ta: 'உருளைக்கிழங்கு', hi: 'आलू', te: 'బంగాళాదుంప', kn: 'ಆಲೂಗಡ್ಡೆ', mr: 'बटाटा', bn: 'আলু' },
+  coffee: { en: 'Coffee', ta: 'காபி', hi: 'कॉफी', te: 'కాఫీ', kn: 'ಕಾಫಿ', mr: 'कॉफी', bn: 'কফি' },
+  rice: { en: 'Rice / Paddy', ta: 'நெல்', hi: 'धान / चावल', te: 'వరి', kn: 'ಭತ್ತ', mr: 'भात', bn: 'ধান' },
+  cotton: { en: 'Cotton', ta: 'பருத்தி', hi: 'कपास', te: 'పత్తి', kn: 'ಹತ್ತಿ', mr: 'कापूस', bn: 'তুলা' },
+  apple: { en: 'Apple', ta: 'ஆப்பிள்', hi: 'सेब', te: 'యాపిల్', kn: 'ಸೇಬು', mr: 'सफरचंद', bn: 'আপেল' },
+  grape: { en: 'Grape', ta: 'திராட்சை', hi: 'அங்கூர்', te: 'ద్రాక్ష', kn: 'ದ್ರಾಕ್ಷಿ', mr: 'द्राक्षे', bn: 'আঙ্গুর' },
+  pepper: { en: 'Chilli / Pepper', ta: 'மிளகாய்', hi: 'मिर्च', te: 'మిరపకాయ', kn: 'ಮೆಣಸಿನಕಾಯಿ', mr: 'मिरची', bn: 'মরিচ' }
+};
+
+const DISEASE_TRANSLATIONS: Record<string, Record<string, string>> = {
+  common_rust: { en: 'Common Rust', ta: 'பொதுவான துரு நோய் (Common Rust)', hi: 'सामान्य रस्ट रोग', te: 'సాధారణ రస్ట్', kn: 'ಸಾಮಾನ್ಯ ತುಕ್ಕು', mr: 'सामान्य तांबेरा', bn: 'সাধারণ মরিচা' },
+  early_blight: { en: 'Early Blight', ta: 'முன்கூட்டிய கருகல் நோய் (Early Blight)', hi: 'अगेती झुलसा', te: 'ముందస్తు ఎండు తెగులు', kn: 'ಆರಂಭಿಕ ಬ್ಲೈಟ್', mr: 'लवकर येणारा करपा', bn: 'আর্লি ব্লাইট' },
+  late_blight: { en: 'Late Blight', ta: 'பின்கூட்டிய கருகல் நோய் (Late Blight)', hi: 'पिछेती झुलसा', te: 'ఆలస్యంగా వచ్చే తెగులు', kn: 'ತಡವಾದ ಬ್ಲೈಟ್', mr: 'उशिरा येणारा करपा', bn: 'লেট ব্লাইট' },
+  leaf_rust: { en: 'Coffee Leaf Rust', ta: 'காபி இலைத் துரு நோய்', hi: 'कॉफी पत्ती रस्ट', te: 'కాఫీ ఆకు రస్ట్', kn: 'ಕಾಫಿ ಎಲೆ ತುಕ್ಕು', mr: 'कॉफी तांबेरा', bn: 'কফি পাতার মরিচা' },
+  bacterial_blight: { en: 'Bacterial Blight', ta: 'பாக்டீரியா கருகல் நோய்', hi: 'जीवाणु झुलसा', te: 'బాక్టీరియా ఎండు తెగులు', kn: 'ಬ್ಯಾಕ್ಟೀರಿಯಾದ ಬ್ಲೈಟ್', mr: 'जिवाणू करपा', bn: 'ব্যাকটেরিয়া ব্লাইট' },
+  healthy: { en: 'Healthy Crop', ta: 'ஆரோக்கியமான பயிர் (Healthy)', hi: 'स्वास्थ्य पौधा', te: 'ఆరోగ్యకరమైన పంట', kn: 'ಆರೋಗ್ಯಕರ ಬೆಳೆ', mr: 'निरोगी पीक', bn: 'স্বাস্থ্যকর ফসল' }
+};
+
+export function getLocalizedCropName(cropKeyOrName: string, langCode: string = 'en'): string {
+  if (!cropKeyOrName) return 'Crop';
+  const normalized = cropKeyOrName.toLowerCase().replace(/[^a-z]/g, '');
+  for (const key of Object.keys(CROP_TRANSLATIONS)) {
+    if (normalized.includes(key)) {
+      return CROP_TRANSLATIONS[key][langCode] || CROP_TRANSLATIONS[key]['en'] || cropKeyOrName;
+    }
+  }
+  return cropKeyOrName;
+}
+
+export function getLocalizedDiseaseTitle(diseaseKeyOrName: string, langCode: string = 'en'): string {
+  if (!diseaseKeyOrName) return 'Condition';
+  const normalized = diseaseKeyOrName.toLowerCase().replace(/[^a-z]/g, '');
+  for (const key of Object.keys(DISEASE_TRANSLATIONS)) {
+    if (normalized.includes(key.replace(/_/g, ''))) {
+      return DISEASE_TRANSLATIONS[key][langCode] || DISEASE_TRANSLATIONS[key]['en'] || diseaseKeyOrName;
+    }
+  }
+  return diseaseKeyOrName;
+}
 
 /**
  * Gets fully translated disease content for the selected language.
@@ -695,7 +832,21 @@ export function getLocalizedDiseaseContent(
   diseaseKey: string,
   langCode: string
 ): LocalizedDiseaseContent | null {
-  const diseaseMap = LOCALIZED_DISEASE_DATA[diseaseKey];
+  if (!diseaseKey) return null;
+
+  let diseaseMap = LOCALIZED_DISEASE_DATA[diseaseKey];
+
+  if (!diseaseMap) {
+    const normSearch = diseaseKey.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const foundKey = Object.keys(LOCALIZED_DISEASE_DATA).find((k) => {
+      const normK = k.toLowerCase().replace(/[^a-z0-9]/g, '');
+      return normK.includes(normSearch) || normSearch.includes(normK);
+    });
+    if (foundKey) {
+      diseaseMap = LOCALIZED_DISEASE_DATA[foundKey];
+    }
+  }
+
   if (!diseaseMap) return null;
 
   return diseaseMap[langCode] || diseaseMap['en'] || null;

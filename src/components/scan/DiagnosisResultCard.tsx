@@ -23,7 +23,11 @@ import {
 import { voiceService } from '../../services/voiceService';
 import { dbService } from '../../services/supabase';
 import { securityService } from '../../services/securityService';
-import { getLocalizedDiseaseContent } from '../../data/localizedDiseases';
+import { 
+  getLocalizedDiseaseContent, 
+  getLocalizedCropName, 
+  getLocalizedDiseaseTitle 
+} from '../../data/localizedDiseases';
 
 interface DiagnosisResultCardProps {
   result: DiagnosisResult;
@@ -52,10 +56,10 @@ export const DiagnosisResultCard: React.FC<DiagnosisResultCardProps> = ({
 
   // Dynamically resolve localized content based on current active language
   const diseaseFullKey = `${result.cropKey}___${result.diseaseKey}`;
-  const localized = getLocalizedDiseaseContent(diseaseFullKey, i18n.language);
+  const localized = getLocalizedDiseaseContent(result.id || diseaseFullKey, i18n.language) || getLocalizedDiseaseContent(diseaseFullKey, i18n.language);
 
-  const displayCrop = localized?.cropName || result.crop;
-  const displayDisease = localized?.diseaseName || result.disease;
+  const displayCrop = localized?.cropName || getLocalizedCropName(result.cropKey || result.crop, i18n.language);
+  const displayDisease = localized?.diseaseName || getLocalizedDiseaseTitle(result.diseaseKey || result.disease, i18n.language);
   const displaySymptoms = localized?.symptoms || result.symptoms || [];
   const displayOrganic = localized?.organicRemedies || result.organicRemedies || [];
   const displayChemical = localized?.chemicalRemedies || result.chemicalRemedies || [];

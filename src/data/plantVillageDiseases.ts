@@ -697,6 +697,52 @@ export const PLANTVILLAGE_DISEASES: Record<string, DiseaseInfo> = {
     preventionTips: [
       'Use acid-delinted certified seeds and avoid overhead flood irrigation'
     ]
+  },
+
+  // --- COFFEE ---
+  'Coffee___Leaf_rust': {
+    id: 'Coffee___Leaf_rust',
+    crop: 'Coffee',
+    cropKey: 'coffee',
+    disease: 'Coffee Leaf Rust',
+    diseaseKey: 'leaf_rust',
+    scientificName: 'Hemileia vastatrix',
+    pathogenType: 'fungal',
+    defaultSeverity: 'severe',
+    isHealthy: false,
+    symptoms: [
+      'Yellow-orange powdery spots on the undersides of coffee leaves',
+      'Corresponding chlorotic yellow patches on the upper leaf surface',
+      'Severe defoliation leading to dieback of coffee branches'
+    ],
+    organicRemedies: [
+      'Spray copper hydroxide or Bordeaux mixture (0.5%) before monsoons',
+      'Prune shade trees to improve canopy aeration and sun penetration',
+      'Apply bio-fungicide Trichoderma harzianum to foliage'
+    ],
+    chemicalRemedies: [
+      'Hexaconazole 5% EC @ 2ml/L or Triadimefon 25% WP @ 1g/L',
+      'Propiconazole 25% EC @ 1ml/L at first sign of orange spots'
+    ],
+    preventionTips: [
+      'Plant resistant Arabica varieties (e.g. Chandragiri, Selection 9)',
+      'Maintain balanced soil N:K ratio to strengthen leaf resistance'
+    ]
+  },
+  'Coffee___healthy': {
+    id: 'Coffee___healthy',
+    crop: 'Coffee',
+    cropKey: 'coffee',
+    disease: 'Healthy Coffee Leaf',
+    diseaseKey: 'healthy',
+    scientificName: 'Coffea arabica / canephora',
+    pathogenType: 'healthy',
+    defaultSeverity: 'none',
+    isHealthy: true,
+    symptoms: ['Lush dark green glossy foliage with no spots or lesions'],
+    organicRemedies: ['Maintain regular organic composting and soil mulching'],
+    chemicalRemedies: ['No chemical treatment required'],
+    preventionTips: ['Ensure good field drainage and weed management']
   }
 };
 
@@ -705,6 +751,7 @@ export const CROP_LIST = [
   { key: 'tomato', name: 'Tomato (टमाटर / தக்காளி)' },
   { key: 'potato', name: 'Potato (आलू / உருளை)' },
   { key: 'corn', name: 'Corn / Maize (मक्का / மக்காச்சோளம்)' },
+  { key: 'coffee', name: 'Coffee (कॉफी / காபி)' },
   { key: 'apple', name: 'Apple (सेब / ஆப்பிள்)' },
   { key: 'grape', name: 'Grape (अंगूर / திராட்சை)' },
   { key: 'pepper', name: 'Chilli / Pepper (मिर्च / மிளகாய்)' },
