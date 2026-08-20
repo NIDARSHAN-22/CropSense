@@ -244,15 +244,18 @@ export async function saveUserCredentialsToSupabase(payload: UserAuthPayload): P
 
   if (isSupabaseConfigured && supabase) {
     try {
-      await supabase.from('user_profiles').upsert({
+      const upsertData: Record<string, any> = {
         id: payload.id,
-        username: payload.username || null,
-        phone: payload.phone || null,
-        email: payload.email || null,
-        password_hash: payload.passwordHash || payload.pinHash || null,
-        login_method: payload.loginMethod,
         created_at: payload.createdAt,
-      });
+      };
+
+      if (payload.username !== undefined && payload.username !== null) upsertData.username = payload.username;
+      if (payload.phone !== undefined && payload.phone !== null) upsertData.phone = payload.phone;
+      if (payload.email !== undefined && payload.email !== null) upsertData.email = payload.email;
+      if (payload.passwordHash || payload.pinHash) upsertData.password_hash = payload.passwordHash || payload.pinHash;
+      if (payload.loginMethod) upsertData.login_method = payload.loginMethod;
+
+      await supabase.from('user_profiles').upsert(upsertData);
     } catch (err) {
       console.warn('Supabase user storage error:', err);
     }

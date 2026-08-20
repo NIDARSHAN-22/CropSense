@@ -19,6 +19,7 @@ import {
 import { UserProfile } from '../types';
 import { 
   saveStoredUserProfile, 
+  saveUserCredentialsToSupabase,
   clearStoredUserProfile, 
   getLocalScans, 
   isSupabaseConfigured, 
@@ -96,6 +97,15 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
     };
 
     await saveStoredUserProfile(updatedUser);
+    await saveUserCredentialsToSupabase({
+      id: updatedUser.id,
+      username: updatedUser.displayName,
+      phone: updatedUser.phone,
+      email: updatedUser.email,
+      loginMethod: 'pin_pass',
+      createdAt: updatedUser.createdAt,
+    });
+
     onUpdateUser(updatedUser);
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 3000);

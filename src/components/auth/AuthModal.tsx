@@ -36,6 +36,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
   // Secure Password/PIN Form
   const [pinAccount, setPinAccount] = useState('');
   const [pinSecret, setPinSecret] = useState('');
+  const [pinPhone, setPinPhone] = useState('');
+  const [pinEmail, setPinEmail] = useState('');
 
   // Email Form
   const [email, setEmail] = useState('');
@@ -145,6 +147,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
       const userProfile: UserProfile = {
         id: `farmer-${sanitizedAccount.toLowerCase().replace(/\s+/g, '-')}`,
         displayName: sanitizedAccount,
+        phone: pinPhone ? securityService.sanitizeInput(pinPhone) : undefined,
+        email: pinEmail ? securityService.sanitizeInput(pinEmail) : undefined,
         preferredLanguage: i18n.language,
         createdAt: new Date().toISOString(),
         isGuest: false,
@@ -154,6 +158,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
       await saveUserCredentialsToSupabase({
         id: userProfile.id,
         username: sanitizedAccount,
+        phone: userProfile.phone,
+        email: userProfile.email,
         pinHash: hashedPassword,
         loginMethod: 'pin_pass',
         createdAt: userProfile.createdAt,
@@ -454,7 +460,35 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                   placeholder="e.g. Ramesh Kumar"
                   className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-stone-300 focus:border-agri-600 outline-none bg-white text-stone-900 placeholder:text-stone-400 font-semibold"
                   required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-stone-700 mb-1">
+                    Mobile Number (Optional)
+                  </label>
+                  <input
+                    type="tel"
+                    maxLength={10}
+                    value={pinPhone}
+                    onChange={(e) => setPinPhone(e.target.value.replace(/\D/g, ''))}
+                    placeholder="9876543210"
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 focus:border-agri-600 outline-none bg-white text-stone-900 placeholder:text-stone-400 font-semibold"
                   />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-stone-700 mb-1">
+                    Email Address (Optional)
+                  </label>
+                  <input
+                    type="email"
+                    value={pinEmail}
+                    onChange={(e) => setPinEmail(e.target.value)}
+                    placeholder="farmer@gmail.com"
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 focus:border-agri-600 outline-none bg-white text-stone-900 placeholder:text-stone-400 font-semibold"
+                  />
+                </div>
               </div>
 
               <div>
